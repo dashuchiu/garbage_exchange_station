@@ -1,0 +1,13 @@
+{
+  "common": {
+    "login": "Log in",
+    "logout": "Log out",
+    "signup": "Sign up"
+  },
+  "messages": {
+    "login_success": "Login Success"
+  },
+  "placeholder": {
+    "email": "Please enter email"
+  }
+}

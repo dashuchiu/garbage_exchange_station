@@ -1,15 +1,25 @@
 <script setup>
 // import { userRegisterService, userLoginService } from '@/api/user.js'
+import { setLang } from '@/utils/localStorage'
 import { Message, Lock } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { ref, watch } from 'vue'
 import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { auth } from '@/api/firebase.js'
+import { useI18n } from 'vue-i18n'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from 'firebase/auth'
+import { useRoute } from 'vue-router'
+import { dataApi } from '@/api/mock/module/data'
+
+
+const { t, locale } = useI18n()
+const route = useRoute()
+console.log(route);
+const langs = ref(['zh-TW', 'en-US'])
 const isRegister = ref(false)
 const form = ref()
 //form對象
@@ -91,7 +101,7 @@ const login = async () => {
       formModel.value.password
     )
     userStore.setToken(res.user.accessToken)
-    ElMessage.success('登入成功')
+    ElMessage.success(t('messages.login_success'))
     console.log(res)
     router.push('/')
   } catch (error) {
@@ -99,6 +109,14 @@ const login = async () => {
     ElMessage.error('無效的用戶名稱')
   }
 }
+
+// mockApi
+const getData = async () => {
+  const data = await dataApi.getData()
+  console.log(data);
+}
+getData()
+
 //切換註冊/登入重置
 watch(isRegister, () => {
   formModel.value = {
@@ -107,12 +125,24 @@ watch(isRegister, () => {
     repassword: ''
   }
 })
+watch(locale, (newlocale) => {
+  setLang(newlocale)
+})
 </script>
 
 <template>
   <el-container>
     <el-header class="nav">
       <a href="/"><img class="logo" src="@/assets/logo.svg" alt="" /></a>
+      <el-select v-model="locale" placeholder="请选择">
+        <el-option
+          v-for="item in langs"
+          :key="item"
+          :label="item"
+          :value="item"
+        >
+        </el-option>
+      </el-select>
     </el-header>
     <el-main>
       <el-row class="login-page" justify="center">
@@ -128,13 +158,13 @@ watch(isRegister, () => {
             v-if="isRegister"
           >
             <el-form-item>
-              <h1>註冊</h1>
+              <h1>{{ t('common.signup') }}</h1>
             </el-form-item>
             <el-form-item prop="email">
               <el-input
                 v-model="formModel.email"
                 :prefix-icon="Message"
-                placeholder="請輸入email"
+                :placeholder="t('placeholder.email')"
               ></el-input>
             </el-form-item>
             <el-form-item prop="password">
