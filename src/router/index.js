@@ -23,9 +23,10 @@ const router = createRouter({
 })
 
 //未登入攔截
-router.beforeEach((to) => {
+router.beforeEach((to, from) => {
   const useStore = useUserStore()
   if (!useStore.token && to.path !== '/login') return '/login'
+  else if (useStore.token && to.path === '/login') return from.path
 })
 
 export default router

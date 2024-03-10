@@ -2,12 +2,17 @@
   "common": {
     "login": "Log in",
     "logout": "Log out",
-    "signup": "Sign up"
+    "signup": "Sign up",
+    "return": "Return",
+    "remember": "Remember Me",
+    "forget": "Forget the Password?"
   },
   "messages": {
     "login_success": "Login Success"
   },
   "placeholder": {
-    "email": "Please enter email"
+    "email": "Email",
+    "password":"Password",
+    "repassword":"Password again"
   }
 }

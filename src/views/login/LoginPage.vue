@@ -1,9 +1,13 @@
 <script setup>
-// import { userRegisterService, userLoginService } from '@/api/user.js'
-import { setLang } from '@/utils/localStorage'
+import { ref, watch, onMounted } from 'vue'
+import {
+  setLang,
+  setRememberMe,
+  removeRememberMe,
+  getRememberMe
+} from '@/utils/localStorage'
 import { Message, Lock } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { ref, watch } from 'vue'
 import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { auth } from '@/api/firebase.js'
@@ -15,11 +19,15 @@ import {
 import { useRoute } from 'vue-router'
 import { dataApi } from '@/api/mock/module/data'
 
-
 const { t, locale } = useI18n()
+console.log(locale)
 const route = useRoute()
-console.log(route);
-const langs = ref(['zh-TW', 'en-US'])
+console.log(route)
+// const langs = ref(['zh-TW', 'en-US'])
+const langs = ref([
+  { name: '中文', lang: 'zh-TW' },
+  { name: 'ENG', lang: 'en-US' }
+])
 const isRegister = ref(false)
 const form = ref()
 //form對象
@@ -28,6 +36,8 @@ const formModel = ref({
   password: '',
   repassword: ''
 })
+//記住我
+const rememberMe = ref(false)
 //校驗規則
 const rules = {
   email: [
@@ -101,6 +111,12 @@ const login = async () => {
       formModel.value.password
     )
     userStore.setToken(res.user.accessToken)
+    removeRememberMe('email')
+    removeRememberMe('password')
+    if (rememberMe.value) {
+      setRememberMe('email', formModel.value.email)
+      setRememberMe('password', formModel.value.password)
+    }
     ElMessage.success(t('messages.login_success'))
     console.log(res)
     router.push('/')
@@ -109,11 +125,21 @@ const login = async () => {
     ElMessage.error('無效的用戶名稱')
   }
 }
+//記住我
+onMounted(() => {
+  const savedUsername = getRememberMe('email')
+  const savedPassword = getRememberMe('password')
+  if (savedUsername && savedPassword) {
+    formModel.value.email = savedUsername
+    formModel.value.password = savedPassword
+    rememberMe.value = true
+  }
+})
 
 // mockApi
 const getData = async () => {
   const data = await dataApi.getData()
-  console.log(data);
+  console.log(data)
 }
 getData()
 
@@ -125,6 +151,7 @@ watch(isRegister, () => {
     repassword: ''
   }
 })
+//切換語系
 watch(locale, (newlocale) => {
   setLang(newlocale)
 })
@@ -134,15 +161,22 @@ watch(locale, (newlocale) => {
   <el-container>
     <el-header class="nav">
       <a href="/"><img class="logo" src="@/assets/logo.svg" alt="" /></a>
-      <el-select v-model="locale" placeholder="请选择">
-        <el-option
-          v-for="item in langs"
-          :key="item"
-          :label="item"
-          :value="item"
-        >
-        </el-option>
-      </el-select>
+
+      <el-dropdown>
+        <span class="el-dropdown-link">
+          <span class="material-symbols-outlined"> language </span>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              v-for="item in langs"
+              :key="item"
+              @click="locale = item.lang"
+              >{{ item.name }}</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </el-header>
     <el-main>
       <el-row class="login-page" justify="center">
@@ -172,7 +206,7 @@ watch(locale, (newlocale) => {
                 v-model="formModel.password"
                 :prefix-icon="Lock"
                 type="password"
-                placeholder="請輸入密碼"
+                :placeholder="t('placeholder.password')"
               ></el-input>
             </el-form-item>
             <el-form-item prop="repassword">
@@ -180,7 +214,7 @@ watch(locale, (newlocale) => {
                 v-model="formModel.repassword"
                 :prefix-icon="Lock"
                 type="password"
-                placeholder="請再次輸入密碼"
+                :placeholder="t('placeholder.repassword')"
               ></el-input>
             </el-form-item>
             <el-form-item>
@@ -190,7 +224,7 @@ watch(locale, (newlocale) => {
                 type="primary"
                 auto-insert-space
               >
-                註冊
+                {{ t('common.signup') }}
               </el-button>
             </el-form-item>
             <el-form-item class="flex">
@@ -199,7 +233,7 @@ watch(locale, (newlocale) => {
                 :underline="false"
                 @click="isRegister = false"
               >
-                ← 返回
+                ← {{ t('common.return') }}
               </el-link>
             </el-form-item>
           </el-form>
@@ -213,13 +247,13 @@ watch(locale, (newlocale) => {
             v-else
           >
             <el-form-item>
-              <h1>登入</h1>
+              <h1>{{ t('common.login') }}</h1>
             </el-form-item>
             <el-form-item prop="email">
               <el-input
                 v-model="formModel.email"
                 :prefix-icon="Message"
-                placeholder="請輸入email"
+                :placeholder="t('placeholder.email')"
               ></el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -228,13 +262,17 @@ watch(locale, (newlocale) => {
                 name="password"
                 :prefix-icon="Lock"
                 type="password"
-                placeholder="請輸入密碼"
+                :placeholder="t('placeholder.password')"
               ></el-input>
             </el-form-item>
             <el-form-item class="flex">
               <div class="flex">
-                <el-checkbox>記住我</el-checkbox>
-                <el-link type="primary" :underline="false">忘記密碼？</el-link>
+                <el-checkbox v-model="rememberMe">{{
+                  t('common.remember')
+                }}</el-checkbox>
+                <el-link type="primary" :underline="false">{{
+                  t('common.forget')
+                }}</el-link>
               </div>
             </el-form-item>
             <el-form-item>
@@ -243,7 +281,7 @@ watch(locale, (newlocale) => {
                 class="button"
                 type="primary"
                 auto-insert-space
-                >登入</el-button
+                >{{ t('common.login') }}</el-button
               >
             </el-form-item>
             <el-form-item class="flex">
@@ -252,22 +290,35 @@ watch(locale, (newlocale) => {
                 :underline="false"
                 @click="isRegister = true"
               >
-                註冊 →
+                {{ t('common.signup') }} →
               </el-link>
             </el-form-item>
           </el-form>
         </el-col>
       </el-row>
     </el-main>
-    <el-footer>Footer</el-footer>
+    <el-footer>Footer </el-footer>
   </el-container>
 </template>
 <style lang="scss" scoped>
 .nav {
   // border: 1px solid black;
-  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
   .logo {
-    width: 10%;
+    width: 50%;
+  }
+  .el-dropdown-link {
+    cursor: pointer;
+    outline-style: none;
+    // color: var(--el-color-primary);
+    display: flex;
+    align-items: center;
+    .material-symbols-outlined {
+      font-size: 36px;
+    }
   }
 }
 
