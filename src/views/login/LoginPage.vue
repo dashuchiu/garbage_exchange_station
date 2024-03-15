@@ -9,14 +9,13 @@ import {
 import { Message, Lock } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { auth } from '@/api/firebase.js'
 import { useI18n } from 'vue-i18n'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from 'firebase/auth'
-import { useRoute } from 'vue-router'
 import { dataApi } from '@/api/mock/module/data'
 
 const { t, locale } = useI18n()
@@ -337,6 +336,7 @@ watch(locale, (newlocale) => {
   }
   .form {
     margin: 40px;
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;

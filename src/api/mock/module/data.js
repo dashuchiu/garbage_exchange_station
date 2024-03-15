@@ -6,3 +6,10 @@ export const dataApi = {
     return data
   }
 }
+
+export const productApi = {
+  getProduct: async () => {
+    const { data } = await server.get('/product')
+    return data
+  }
+}
