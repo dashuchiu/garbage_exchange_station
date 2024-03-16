@@ -11,13 +11,6 @@ const router = useRouter()
 onMounted(() => {
   userStore.getUser()
 })
-
-// const logout = () => {
-//   userStore.removeToken()
-//   userStore.setUser({})
-//   router.push('/login')
-// }
-
 const publish = () => {
   router.push('/main/publish')
 }
@@ -25,23 +18,6 @@ const isLoggedOut = ref(true)
 if (userStore.token) {
   isLoggedOut.value = false
 }
-// const onCommand = async (command) => {
-//   if (command === 'logout') {
-//     await ElMessageBox.confirm('你確認登出嗎？', '稍等一下', {
-//       type: 'warning',
-//       confirmButtonText: '確認',
-//       cancelButtonText: '取消'
-//     })
-//     userStore.removeToken()
-//     userStore.setUser({})
-//     isLoggedIn.value = false
-//     // router.push(`/login`)
-//   } else if (command === 'login') {
-//     router.push(`/login`)
-//   } else {
-//     router.push(`/main/${command}`)
-//   }
-// }
 const onCommand = async (command) => {
   if (command === 'logout') {
     await ElMessageBox.confirm('你確認登出嗎？', '稍等一下', {
@@ -59,6 +35,12 @@ const onCommand = async (command) => {
 const login = () => {
   router.push(`/login`)
 }
+const hotProducts = () => {
+  router.push(`/main/hotProducts`)
+}
+const category = () => {
+  router.push(`/main/category`)
+}
 </script>
 
 <template>
@@ -74,8 +56,8 @@ const login = () => {
                 fit="contain"
               />
             </el-link>
-            <el-link :underline="false">熱門</el-link>
-            <el-link :underline="false">分類</el-link>
+            <el-link @click="hotProducts" :underline="false">熱門</el-link>
+            <el-link @click="category" :underline="false">分類</el-link>
             <el-input
               style="width: 180px"
               :suffix-icon="Search"

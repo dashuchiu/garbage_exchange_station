@@ -1,43 +1,53 @@
-<script>
+<script setup>
 import { productApi } from '@/api/mock/module/data'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-const list = ref([])
+const products = ref([])
+const router = useRouter()
 // mockApi
 const getProduct = async () => {
   const data = await productApi.getProduct()
   console.log(data)
-  list.value = data
-  console.log(list.value[0].title)
+  products.value = data
+  console.log(products.value[0].title)
 }
 getProduct()
+
+const moreProducts = () => {
+  router.push(`/main/more`)
+}
 </script>
 <template>
   <div class="bg"></div>
   <el-container class="hero">
     <h1>本日熱門</h1>
-    <div></div>
   </el-container>
   <el-row justify="space-between">
     <el-col :span="10"><el-text size="large">最新廢物</el-text></el-col>
     <el-col :span="10"
-      ><el-button round size="large">更多廢物</el-button></el-col
+      ><el-button @click="moreProducts" round size="large"
+        >更多廢物</el-button
+      ></el-col
     >
   </el-row>
   <div class="product-items">
     <el-container class="items">
-      <el-card shadow="hover">
-        <template #header>OOXX</template>
-        <img
-          src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-          style="width: 100%"
+      <el-card shadow="hover" v-for="item in products" :key="item.id">
+        <template #header>{{ item.title }}</template>
+        <el-image
+          style="width: 200; height: 250px"
+          :src="item.img"
+          fit="contain"
         />
         <template #footer>
           <el-row justify="space-between">
             <el-col class="love" :span="6"
               ><span class="material-symbols-outlined"> favorite </span></el-col
             >
-            <el-col :span="6"
-              ><el-text size="large" tag="b">NT$ 168</el-text></el-col
+            <el-col class="price" :span="8"
+              ><el-text size="large" tag="b"
+                >NT$ {{ item.price }}</el-text
+              ></el-col
             >
           </el-row>
         </template>
@@ -70,7 +80,7 @@ getProduct()
 .product-items {
   margin: 20px 0;
   .items {
-    border: 1px solid black;
+    // border: 1px solid black;
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
@@ -85,8 +95,15 @@ getProduct()
       //   margin-right: 0px;
       // }
       cursor: pointer;
+      .el-image {
+        left: 50%;
+        transform: translateX(-50%);
+      }
       .love {
         justify-content: flex-start;
+      }
+      .price {
+        justify-content: flex-end;
       }
     }
   }

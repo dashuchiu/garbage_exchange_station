@@ -20,6 +20,26 @@ const router = createRouter({
         {
           path: '/main/publish',
           component: () => import('@/views/publish/PublishPage.vue')
+        },
+        {
+          path: '/main/more',
+          component: () => import('@/views/more/MoreProducts.vue')
+        },
+        {
+          path: '/main/account',
+          component: () => import('@/views/user/UserPage.vue')
+        },
+        {
+          path: '/main/favorite',
+          component: () => import('@/views/favorite/FavoritePage.vue')
+        },
+        {
+          path: '/main/hotProducts',
+          component: () => import('@/views/hot/HotPage.vue')
+        },
+        {
+          path: '/main/category',
+          component: () => import('@/views/category/CategoryPage.vue')
         }
       ]
     }
