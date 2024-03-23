@@ -2,48 +2,56 @@
     {
         "id": "1",
         "title": "炸蝦熊",
+        "category": "雜物",
         "price": "150",
         "img": "https://ppt.cc/frSI1x@.jpg"
     },
     {
         "id": "2",
         "title": "法鼓山春聯",
+        "category": "其他",
         "price": "0",
         "img": "https://ppt.cc/fBqGix@.jpg"
     },
     {
         "id": "3",
         "title": "動物森友會switch",
+        "category": "其他",
         "price": "500",
         "img": "https://ppt.cc/fSwPkx@.jpg"
     },
     {
         "id": "4",
         "title": "妄想代理人特典",
+        "category": "收藏",
         "price": "1500",
         "img": "https://ppt.cc/f36zyx@.jpg"
     },
     {
         "id": "5",
         "title": "printed high quality T shirts",
+        "category": "雜物",
         "price": "900",
         "img": "https://cdn.dummyjson.com/product-images/53/thumbnail.jpg"
     },
     {
         "id": "6",
         "title": "Wiley X墨鏡",
+        "category": "雜物",
         "price": "1250",
         "img": "https://cdn.dummyjson.com/product-images/83/thumbnail.jpg"
     },
     {
         "id": "7",
         "title": "二手筆電",
+        "category": "其他",
         "price": "2000",
         "img": "https://cdn.dummyjson.com/product-images/7/thumbnail.jpg"
     },
     {
         "id": "8",
         "title": "一堆扭蛋",
+        "category": "收藏",
         "price": "200",
         "img": "https://ppt.cc/fDtAkx@.jpg"
     }

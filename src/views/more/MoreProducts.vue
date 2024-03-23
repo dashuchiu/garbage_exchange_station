@@ -1,3 +1,9 @@
+<script setup>
+import LayoutContainer from '@/components/layout/LayoutContainer.vue'
+</script>
 <template>
-  <div>更多廢物</div>
+  <LayoutContainer>
+    <template #content> </template>
+  </LayoutContainer>
 </template>
+<style lang="scss" scoped></style>

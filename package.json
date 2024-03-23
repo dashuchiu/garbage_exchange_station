@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.6.7",
+    "dayjs": "^1.11.10",
     "element-plus": "^2.6.0",
     "firebase": "^10.8.1",
     "mockjs": "^1.1.0",

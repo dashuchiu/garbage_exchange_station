@@ -8,6 +8,14 @@ import { ref } from 'vue'
 const userStore = useUserStore()
 const router = useRouter()
 
+//搜尋功能
+const input = ref('')
+const emit = defineEmits(['search'])
+const handleSearch = () => {
+  // console.log(input.value)
+  emit('search', input.value)
+}
+
 onMounted(() => {
   userStore.getUser()
 })
@@ -35,9 +43,9 @@ const onCommand = async (command) => {
 const login = () => {
   router.push(`/login`)
 }
-const hotProducts = () => {
-  router.push(`/main/hotProducts`)
-}
+// const hotProducts = () => {
+//   router.push(`/main/hotProducts`)
+// }
 const category = () => {
   router.push(`/main/category`)
 }
@@ -56,11 +64,14 @@ const category = () => {
                 fit="contain"
               />
             </el-link>
-            <el-link @click="hotProducts" :underline="false">熱門</el-link>
+            <!-- <el-link @click="hotProducts" :underline="false">熱門</el-link> -->
             <el-link @click="category" :underline="false">分類</el-link>
             <el-input
+              clearable
               style="width: 180px"
               :suffix-icon="Search"
+              v-model="input"
+              @input="handleSearch"
               placeholder="找廢物"
             ></el-input>
           </el-col>
@@ -80,7 +91,8 @@ const category = () => {
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item command="account">帳號</el-dropdown-item>
-                  <el-dropdown-item command="favorite">收藏</el-dropdown-item>
+                  <el-dropdown-item command="collection">收藏</el-dropdown-item>
+                  <el-dropdown-item command="manage">管理</el-dropdown-item>
                   <el-dropdown-item command="logout">登出</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -89,8 +101,10 @@ const category = () => {
           </el-col>
         </el-row>
       </el-header>
-      <el-main><router-view></router-view></el-main>
-      <el-footer>Footer</el-footer>
+      <el-main>
+        <slot name="content"></slot>
+      </el-main>
+      <el-footer> © 2024 Recycle Studio</el-footer>
     </el-container>
   </div>
 </template>
@@ -133,5 +147,8 @@ const category = () => {
       }
     }
   }
+}
+.el-footer {
+  text-align: center;
 }
 </style>

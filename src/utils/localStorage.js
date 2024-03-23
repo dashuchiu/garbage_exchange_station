@@ -14,3 +14,18 @@ export const getRememberMe = (key, value) => {
 export const removeRememberMe = (key) => {
   return localStorage.removeItem(key)
 }
+//productsList
+export const productsList = () => {
+  return JSON.parse(localStorage.getItem('products')).products
+}
+
+// 收藏
+export const setCollection = (product) => {
+  localStorage.setItem('collection', JSON.stringify(product))
+}
+export const getCollection = (product) => {
+  return JSON.parse(localStorage.getItem('collection', product)) || []
+}
+export const removeCollection = (product) => {
+  localStorage.removeItem('collection', product)
+}
