@@ -1,57 +1,134 @@
 <script setup>
 import LayoutContainer from '@/components/layout/LayoutContainer.vue'
+import { copyByText } from '@/utils/copy'
 import { Link, UserFilled } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+import dayjs from 'dayjs'
+import { ref, computed } from 'vue'
+import {
+  productsList,
+  setCollection,
+  getCollection
+} from '@/utils/localStorage'
+import { commentApi } from '@/api/mock/module/data'
 const input = ref('')
-const value = ref(3.7)
-const url =
-  'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+const rate = ref(3.7)
+const route = useRoute()
+const routeId = route.params.id
+const collection = ref(getCollection())
+const products = ref(productsList())
+const product = computed(() =>
+  products.value.find((product) => product.id === routeId)
+)
+const productUrl = ref(window.location.href)
+
+//收藏
+const addToCollection = (id) => {
+  const selectedProduct = products.value.find((product) => product.id === id)
+  const check = collection.value.every(
+    (product) => product.id !== selectedProduct.id
+  )
+  if (check) {
+    const newCollection = [...collection.value, selectedProduct]
+    // 1. 存進數據庫
+    setCollection(newCollection) // 收藏
+    // 2. 改變狀態 => 重渲染畫面
+    collection.value = newCollection
+    ElMessage.success('收藏成功')
+  } else {
+    const newCollection = collection.value.filter(
+      (product) => product.id !== id
+    )
+    // 1. 存進數據庫
+    setCollection(newCollection) // 移除收藏
+    // 2. 改變狀態 => 重渲染畫面
+    collection.value = newCollection
+    ElMessage.success('移除收藏')
+  }
+}
+const isProductInCollection = (id) => {
+  return collection.value.some((product) => product.id === id)
+}
+
+//倒數天數
+const diffDays = ref(null)
+const targetDate = dayjs(product.value.date)
+const today = dayjs()
+diffDays.value = targetDate.diff(today, 'day')
+
+//留言
+const comment = ref([])
+const getCommetList = async () => {
+  const data = await commentApi.getComment()
+  comment.value = data[routeId]
+  comment.value.forEach((item) => {
+    item.avatar = item.author.slice(0, 2)
+  })
+  console.log(comment.value)
+}
+getCommetList()
 </script>
 <template>
   <LayoutContainer>
     <template #content>
       <div class="container">
         <el-row>
-          <el-col :span="15"
-            ><div class="img-wrapper">
-              <img :src="url" alt="" /></div
-          ></el-col>
+          <el-col :span="15">
+            <div class="img-container">
+              <div
+                class="img"
+                :style="{ 'background-image': `url(${product.img})` }"
+              ></div>
+              <div class="love-btn">
+                <span
+                  @click="addToCollection(product.id)"
+                  class="material-symbols-outlined"
+                  :class="{ fillLove: isProductInCollection(product.id) }"
+                >
+                  favorite
+                </span>
+              </div>
+            </div></el-col
+          >
           <el-col class="imgCard-right" :span="9">
-            <div class="product-title">神奇寶貝卡</div>
+            <div class="product-title">{{ product.title }}</div>
             <div class="seller-card">
               <span
                 ><el-avatar
                   src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
               /></span>
-              <span class="seller-id">蒙布朗阿伯</span>
+              <span class="seller-id">{{ product.author }}</span>
               <el-rate
-                v-model="value"
+                v-model="rate"
                 disabled
                 show-score
                 text-color="#ff9900"
                 score-template="{value} 好評"
               />
             </div>
-            <div><span class="price">NT$ 888</span></div>
+            <div>
+              <span class="price">NT$ {{ product.price }}</span>
+            </div>
             <div class="time-items">
               <span class="material-symbols-outlined"> timer </span>
-              <span>倒數12天</span>
+              <span>倒數{{ diffDays }}天</span>
             </div>
             <div class="buy-items">
               <el-button class="buy" type="primary" round size="large"
                 >我要廢物</el-button
               >
-              <el-button class="icon-link" :icon="Link" size="large" circle />
+              <el-button
+                @click="copyByText(`${productUrl}`)"
+                class="icon-link"
+                :icon="Link"
+                size="large"
+                circle
+              />
             </div>
           </el-col>
         </el-row>
         <div class="about-title">關於這個廢物</div>
-        <div class="about-content">
-          鳥兒，是大自然的精靈，展翅飛翔於蒼穹之間，翩翩起舞於綠林間，它們的美妙身影和優雅姿態，總能給人們帶來無限的驚喜和感動。
-          鳥兒的羽毛，如同一幅幅精美的畫作，色彩繽紛，紋路精細，輕輕飄動間，彷彿在空中繪畫出一幅美麗的圖畫。它們的歌聲，清脆悅耳，如同一首首動人的樂章，讓人們心曠神怡，感受到大自然的神奇和美好。
-          鳥兒的生活，充滿了智慧和勇氣。它們在茂密的樹林中穿梭飛行，尋找食物和樂趣，不畏艱險，展現出頑強的生命力和適應能力。鳥兒的繁殖行為也是一種奇蹟，它們建立巢穴，孵化幼鳥，呵護後代，展現出無私的愛和責任。
-          因此，讚美鳥兒是再合適不過的了。它們是大自然的瑰寶，是生命的奇跡，是我們應該珍惜和保護的寶貴資源。讓我們一起為鳥兒歡呼，讚美它們的美麗和偉大！
-        </div>
+        <div v-html="product.content" class="about-content"></div>
         <div class="replay-title">留言</div>
         <div class="replay-box">
           <div class="left">
@@ -64,11 +141,17 @@ const url =
           </div>
           <el-button class="buy" type="primary" size="large">送出</el-button>
         </div>
-        <div class="comment-box">
-          <el-avatar> 王媽 </el-avatar>
-          <div>喜歡蒙布朗的王媽媽</div>
-          <div class="comment-content">這是什麼品種?</div>
+        <div class="comment-box" v-for="item in comment" :key="item.id">
+          <el-avatar>{{ item.avatar }}</el-avatar>
+          <div>{{ item.author }}</div>
+          <div class="comment-content">{{ item.content }}</div>
         </div>
+      </div>
+      <div class="box">
+        <div
+          class="box"
+          :style="{ 'background-image': `url(${product.img})` }"
+        ></div>
       </div>
     </template>
   </LayoutContainer>
@@ -88,26 +171,62 @@ const url =
 .container {
   max-width: 1140px;
   margin: 20px auto;
-  .img-wrapper {
+  // border: 1px solid black;
+  .img-container {
+    // border: 1px solid black;
+    width: 70%;
+    display: block;
+    margin: 0 auto;
+    border-radius: 15px;
     overflow: hidden;
-    transform: rotate(0deg);
-    border-radius: 1rem;
-
-    img {
+    &:before {
+      content: '';
+      // border: 1px solid rgb(190, 102, 102);
+      display: block;
       width: 100%;
-      height: 100%;
-      transition: scale 400ms;
-      border-radius: 1rem;
-      vertical-align: bottom;
+      padding-bottom: 75%;
     }
-    &:hover img {
-      scale: 110%;
-      border-radius: 1rem;
+    .img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      transition: transform 0.2s;
+    }
+    &:hover .img {
+      transform: scale(1.2);
+    }
+    .love-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      min-height: 36px;
+      min-width: 36px;
+      background: #fff;
+      border-radius: 40px;
+      cursor: pointer;
+      .material-symbols-outlined {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -40%);
+      }
+      .fillLove {
+        color: #f69f58;
+        font-variation-settings:
+          'FILL' 100,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+      }
     }
   }
-
   .imgCard-right {
-    padding: 0 20px;
+    padding-right: 20px;
     .product-title {
       font-size: 28px;
       line-height: 60px;
@@ -171,7 +290,7 @@ const url =
   align-items: center;
   line-height: 80px;
   border-top: 1px solid #bababa;
-  border-bottom: 1px solid #bababa;
+  // border-bottom: 1px solid #bababa;
   *:not(:last-child) {
     margin-right: 20px;
   }

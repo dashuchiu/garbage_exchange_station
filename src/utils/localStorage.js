@@ -14,9 +14,14 @@ export const getRememberMe = (key, value) => {
 export const removeRememberMe = (key) => {
   return localStorage.removeItem(key)
 }
+//getUserInfo
+export const getUsrtInfo = () => {
+  return JSON.parse(localStorage.getItem('user')) || []
+}
+
 //productsList
 export const productsList = () => {
-  return JSON.parse(localStorage.getItem('products')).products
+  return JSON.parse(localStorage.getItem('products'))?.products || []
 }
 
 // 收藏

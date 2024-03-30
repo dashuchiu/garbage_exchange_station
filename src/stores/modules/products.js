@@ -10,12 +10,15 @@ export const useProductsStore = defineStore(
       const data = await productApi.getProduct()
       // console.log(data)
       products.value = data
-      // console.log(products.value[0].title)
+    }
+    const setProductList = (val) => {
+      products.value = val
     }
 
     return {
       products,
-      getProductsList
+      getProductsList,
+      setProductList
     }
   },
   {

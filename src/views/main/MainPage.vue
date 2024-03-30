@@ -9,7 +9,7 @@ import LayoutContainer from '@/components/layout/LayoutContainer.vue'
 import dayjs from 'dayjs'
 import { ref } from 'vue'
 const products = ref(productsList())
-
+const collection = ref(getCollection())
 //搜尋功能
 const search = (val) => {
   const keyword = val.trim() // 搜尋
@@ -19,21 +19,49 @@ const search = (val) => {
   products.value = filterProducts
 }
 
+const casual = [
+  {
+    id: 1,
+    img: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+    title: 'Fjallraven 15吋筆電包',
+    price: 200,
+    countDown: 25
+  },
+  {
+    id: 2,
+    img: 'https://cdn.dummyjson.com/product-images/25/4.jpg',
+    title: '梅子粉',
+    price: 50,
+    countDown: 8
+  }
+]
+
 //收藏
 const addToCollection = (id) => {
-  const collection = getCollection()
   const selectedProduct = products.value.find((product) => product.id === id)
-  const check = collection.every((product) => product.id !== selectedProduct.id)
+  const check = collection.value.every(
+    (product) => product.id !== selectedProduct.id
+  )
   if (check) {
-    setCollection([...collection, selectedProduct]) // 收藏
+    const newCollection = [...collection.value, selectedProduct]
+    // 1. 存進數據庫
+    setCollection(newCollection) // 收藏
+    // 2. 改變狀態 => 重渲染畫面
+    collection.value = newCollection
+    ElMessage.success('收藏成功')
   } else {
-    const newCollection = collection.filter((product) => product.id !== id)
+    const newCollection = collection.value.filter(
+      (product) => product.id !== id
+    )
+    // 1. 存進數據庫
     setCollection(newCollection) // 移除收藏
+    // 2. 改變狀態 => 重渲染畫面
+    collection.value = newCollection
+    ElMessage.success('移除收藏')
   }
 }
 const isProductInCollection = (id) => {
-  const collection = getCollection()
-  return collection.some((product) => product.id === id)
+  return collection.value.some((product) => product.id === id)
 }
 
 //倒數天數
@@ -58,43 +86,23 @@ const moreProducts = () => {
             <!-- <el-carousel-item v-for="item in 4" :key="item">
               <h3 class="small justify-center" text="2xl">{{ item }}</h3>
             </el-carousel-item> -->
-            <el-carousel-item>
+            <el-carousel-item v-for="item in casual" :key="item.id">
               <el-row class="hot-items">
                 <el-col :span="16">
                   <el-card shadow="always">
                     <el-image
                       style="width: 400px; height: 250px"
-                      src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                      :src="item.img"
                       fit="cover"
                     />
-                    <template #footer>漢堡</template>
+                    <template #footer>{{ item.title }}</template>
                   </el-card></el-col
                 >
                 <el-col :span="8" class="hot-items-right">
                   <h3 class="title">目前價位</h3>
-                  <h1 class="price">NT$ 666</h1>
+                  <h1 class="price">NT$ {{ item.price }}</h1>
                   <h3 class="title">倒數天數</h3>
-                  <p class="day">{{ diffDays }}天</p>
-                </el-col>
-              </el-row>
-            </el-carousel-item>
-            <el-carousel-item>
-              <el-row class="hot-items">
-                <el-col :span="16">
-                  <el-card shadow="always">
-                    <el-image
-                      style="width: 400px; height: 250px"
-                      src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-                      fit="cover"
-                    />
-                    <template #footer>漢堡</template>
-                  </el-card></el-col
-                >
-                <el-col :span="8" class="hot-items-right">
-                  <h3 class="title">目前價位</h3>
-                  <h1 class="price">NT$ 666</h1>
-                  <h3 class="title">倒數天數</h3>
-                  <p class="day">{{ diffDays }}天</p>
+                  <p class="day">{{ item.countDown }}天</p>
                 </el-col>
               </el-row>
             </el-carousel-item>
@@ -118,19 +126,24 @@ const moreProducts = () => {
               :src="item.img"
               fit="contain"
             />
+            <div class="love-btn">
+              <span
+                @click="addToCollection(item.id)"
+                class="material-symbols-outlined"
+                :class="{ fillLove: isProductInCollection(item.id) }"
+              >
+                favorite
+              </span>
+            </div>
             <template #footer>
               <el-row justify="space-between">
-                <el-col
-                  class="love"
-                  :class="{ fillLove: isProductInCollection(item.id) }"
-                  :span="6"
-                  ><span
-                    @click="addToCollection(item.id)"
-                    class="material-symbols-outlined"
+                <el-col class="more" :span="8">
+                  <el-link
+                    @click="router.push(`/main/productDetail/${item.id}`)"
+                    :underline="false"
+                    >查看更多</el-link
                   >
-                    favorite
-                  </span></el-col
-                >
+                </el-col>
                 <el-col class="price" :span="8"
                   ><el-text size="large" tag="b"
                     >NT$ {{ item.price }}</el-text
@@ -174,6 +187,7 @@ const moreProducts = () => {
 
 .product-items {
   margin: 20px 0;
+
   .items {
     // border: 1px solid black;
     display: flex;
@@ -189,22 +203,49 @@ const moreProducts = () => {
       // &:nth-child(4n) {
       //   margin-right: 0px;
       // }
-      cursor: pointer;
-      .el-image {
-        left: 50%;
-        transform: translateX(-50%);
+      :deep() {
+        .el-card__header,
+        .el-card__footer {
+          border: none;
+        }
+        .el-card__body {
+          background-color: #f7f6f5;
+          .el-image {
+            left: 50%;
+            transform: translateX(-50%);
+          }
+          .love-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            min-height: 36px;
+            min-width: 36px;
+            background: #fff;
+            border-radius: 40px;
+            cursor: pointer;
+            .material-symbols-outlined {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -40%);
+            }
+            .fillLove {
+              color: #f69f58;
+              font-variation-settings:
+                'FILL' 100,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24;
+            }
+          }
+        }
       }
-      .love {
+
+      .more {
         justify-content: flex-start;
+        font-size: 14px;
       }
-      .fillLove {
-        color: #f69f58;
-        font-variation-settings:
-          'FILL' 100,
-          'wght' 400,
-          'GRAD' 0,
-          'opsz' 24;
-      }
+
       .price {
         justify-content: flex-end;
       }
@@ -218,7 +259,15 @@ const moreProducts = () => {
 
 .hot-items {
   height: 100%;
-
+  :deep() {
+    .el-card__header,
+    .el-card__footer {
+      border: none;
+    }
+    .el-card__body {
+      background-color: #f7f6f5;
+    }
+  }
   .hot-items-right {
     flex-direction: column;
     align-items: flex-start;

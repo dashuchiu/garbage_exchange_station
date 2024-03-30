@@ -47,7 +47,7 @@ const router = createRouter({
           component: () => import('@/views/manage/ManagePage.vue')
         },
         {
-          path: '/main/productDetail',
+          path: '/main/productDetail/:id',
           component: () => import('@/views/product/ProductDetailPage.vue')
         }
       ]

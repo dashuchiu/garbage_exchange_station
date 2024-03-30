@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 import { UserFilled, Search } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
+import { getUsrtInfo } from '@/utils/localStorage'
 import { ref } from 'vue'
 const userStore = useUserStore()
 const router = useRouter()
@@ -19,6 +20,10 @@ const handleSearch = () => {
 onMounted(() => {
   userStore.getUser()
 })
+//會員資訊>email
+const { userInfo: userInfo } = getUsrtInfo()
+// console.log(userInfo.email)
+
 const publish = () => {
   router.push('/main/publish')
 }
@@ -56,7 +61,7 @@ const category = () => {
     <el-container>
       <el-header class="nav">
         <el-row>
-          <el-col :span="22">
+          <el-col :span="20">
             <el-link href="/" :underline="false">
               <el-image
                 style="width: 150px; height: 150px"
@@ -68,14 +73,14 @@ const category = () => {
             <el-link @click="category" :underline="false">分類</el-link>
             <el-input
               clearable
-              style="width: 180px"
+              style="width: 250px"
               :suffix-icon="Search"
               v-model="input"
               @input="handleSearch"
               placeholder="找廢物"
             ></el-input>
           </el-col>
-          <el-col class="r-nav" :span="2">
+          <el-col class="r-nav" :span="4">
             <el-button
               class="btn-login"
               v-if="isLoggedOut"
@@ -87,6 +92,7 @@ const category = () => {
             <el-dropdown v-else @command="onCommand">
               <span class="el-dropdown-link">
                 <el-avatar :icon="UserFilled" />
+                <span class="userInfo">{{ userInfo.email }}</span>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -142,7 +148,7 @@ const category = () => {
         display: flex;
         align-items: center;
         .el-avatar {
-          margin: 0 20px;
+          margin: 0 5px 0 20px;
         }
       }
     }
@@ -150,5 +156,8 @@ const category = () => {
 }
 .el-footer {
   text-align: center;
+}
+.userInfo {
+  min-width: 50px;
 }
 </style>

@@ -5,17 +5,61 @@ import { Plus } from '@element-plus/icons-vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import LayoutContainer from '@/components/layout/LayoutContainer.vue'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
-const products = ref(productsList())
-console.log(products)
-//編輯器
-const formModel = reactive({
-  title: 'test123',
-  cate_id: '',
-  cover_img: '',
-  content: '',
-  price: ''
-})
+import { useProductsStore } from '@/stores'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
+const productsStore = useProductsStore()
+const products = ref(productsList())
+const form = ref()
+//表單
+const formModel = reactive({
+  id: String(Math.round(Math.random() * 1000)),
+  title: '',
+  category: '',
+  img: '',
+  content: '',
+  price: '',
+  date: ''
+})
+//校驗規則
+const rules = {
+  title: [
+    { required: true, message: '請輸入標題', trigger: 'blur' },
+    {
+      pattern: /^\S{1,10}$/,
+      message: '標題必須為1-10個非空白字元',
+      trigger: 'blur'
+    }
+  ],
+  category: [{ required: true, message: '請選擇分類', trigger: 'blur' }],
+  img: [{ required: true, message: '請附加照片', trigger: 'blur' }],
+  content: [{ required: true, message: '請輸入描述', trigger: 'blur' }],
+  price: [
+    { required: true, message: '請標價', trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9]{1,15}$/,
+      message: '請輸入1-9個非空白字元',
+      trigger: 'blur'
+    }
+  ],
+  date: [{ required: true, message: '請選擇日期', trigger: 'blur' }]
+}
+//送出前預校驗
+const post = async () => {
+  try {
+    await form.value.validate()
+
+    ElMessage.success('送出成功')
+    //新增
+    const newProducts = [...products.value, formModel]
+    productsStore.setProductList(newProducts)
+    router.push('/main')
+  } catch (error) {
+    console.log(error.code)
+  }
+}
+//編輯器
 const editorOptions = reactive({
   modules: {
     toolbar: [
@@ -35,22 +79,33 @@ const editorOptions = reactive({
     ]
   }
 })
-const onEditorChange = (event) => {
-  console.log(event)
-}
-const post = () => {
-  // 新增
-  const newProducts = [...products.value, formModel]
-  console.log(newProducts)
+const onEditorChange = (val) => {
+  formModel.content = val
 }
 
-const value = ref('')
-const options = ['收藏', '雜物', '其他']
+const options = [
+  {
+    value: '收藏',
+    label: '收藏'
+  },
+  {
+    value: '雜物',
+    label: '雜物'
+  },
+  {
+    value: '其他',
+    label: '其他'
+  }
+]
 //上傳圖片相關
 const imgUrl = ref('')
 const onUploadFile = (uploadFile) => {
   imgUrl.value = URL.createObjectURL(uploadFile.raw) //預覽圖片
-  formModel.value.cover_img = uploadFile.raw
+  formModel.img = imgUrl.value
+}
+//日期
+const disabledDate = (time) => {
+  return time.getTime() < Date.now()
 }
 </script>
 <template>
@@ -58,19 +113,29 @@ const onUploadFile = (uploadFile) => {
     <template #content>
       <div class="container">
         <!-- 丟廢物表單 -->
-        <el-form :model="formModel" ref="formRef" label-width="100px">
+        <el-form
+          :rules="rules"
+          :model="formModel"
+          ref="form"
+          label-width="100px"
+          status-icon
+        >
           <el-form-item label="廢物名稱" prop="title">
             <el-input
               v-model="formModel.title"
               placeholder="請輸入廢物名稱"
             ></el-input>
           </el-form-item>
-          <el-form-item label="廢物分類" prop="cate_id">
-            <el-select v-model="value" placeholder="請選擇">
-              <el-option v-for="item in options" :key="item" :value="item" />
+          <el-form-item label="廢物分類" prop="category">
+            <el-select v-model="formModel.category" placeholder="請選擇">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
-          <el-form-item label="廢物照片" prop="cover_img">
+          <el-form-item label="廢物照片" prop="img">
             <el-upload
               class="avatar-uploader"
               :show-file-list="false"
@@ -87,7 +152,7 @@ const onUploadFile = (uploadFile) => {
                 :options="editorOptions"
                 theme="snow"
                 v-model:content="formModel.content"
-                contentType="text"
+                contentType="html"
                 @update:content="onEditorChange($event)"
               >
               </quill-editor>
@@ -98,6 +163,14 @@ const onUploadFile = (uploadFile) => {
               v-model="formModel.price"
               placeholder="請輸入廢物起標價格"
             ></el-input>
+          </el-form-item>
+          <el-form-item label="截止日期" prop="date">
+            <el-date-picker
+              v-model="formModel.date"
+              type="date"
+              placeholder="請選個日期"
+              :disabled-date="disabledDate"
+            />
           </el-form-item>
           <el-form-item>
             <el-button @click="post" type="primary">送出</el-button>

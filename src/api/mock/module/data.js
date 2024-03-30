@@ -13,3 +13,9 @@ export const productApi = {
     return data
   }
 }
+export const commentApi = {
+  getComment: async () => {
+    const { data } = await server.get('/comment')
+    return data
+  }
+}

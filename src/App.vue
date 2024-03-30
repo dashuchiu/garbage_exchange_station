@@ -1,11 +1,17 @@
 <script setup>
 import { useProductsStore } from '@/stores'
+import { productsList } from '@/utils/localStorage'
+
 const productsStore = useProductsStore()
-productsStore.getProductsList()
+
+const getProductList = () => {
+  if (!productsList().length) {
+    productsStore.getProductsList()
+  }
+}
+getProductList()
 </script>
 <template>
   <router-view></router-view>
 </template>
-<style lang="scss">
-$font-color: #f69f58;
-</style>
+<style lang="scss"></style>

@@ -1,10 +1,10 @@
 <script setup>
 import LayoutContainer from '@/components/layout/LayoutContainer.vue'
 import { setCollection, getCollection } from '@/utils/localStorage'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 const products = ref(getCollection())
-console.log(products)
-
+const router = useRouter()
 //搜尋功能
 const search = (val) => {
   const keyword = val.trim() // 搜尋
@@ -31,12 +31,24 @@ const isProductInCollection = (id) => {
   const collection = getCollection()
   return collection.some((product) => product.id === id)
 }
+
+//全部移除
+const allRemove = async () => {
+  await ElMessageBox.confirm('你確定要全部移除嗎？', '稍等一下', {
+    type: 'warning',
+    confirmButtonText: '確認',
+    cancelButtonText: '取消'
+  })
+
+  setCollection([])
+  products.value = ''
+}
 </script>
 <template>
   <LayoutContainer @search="search">
     <template #content>
       <div class="btn-container">
-        <el-button round size="large">全部刪除</el-button>
+        <el-button @click="allRemove" round size="large">全部移除</el-button>
       </div>
       <div class="product-items">
         <el-container class="items">
@@ -47,19 +59,24 @@ const isProductInCollection = (id) => {
               :src="item.img"
               fit="contain"
             />
+            <div class="love-btn">
+              <span
+                @click="removeCollection(item.id)"
+                class="material-symbols-outlined"
+                :class="{ fillLove: isProductInCollection(item.id) }"
+              >
+                favorite
+              </span>
+            </div>
             <template #footer>
               <el-row justify="space-between">
-                <el-col
-                  class="love"
-                  :class="{ fillLove: isProductInCollection(item.id) }"
-                  :span="6"
-                  ><span
-                    @click="removeCollection(item.id)"
-                    class="material-symbols-outlined"
+                <el-col class="more" :span="8">
+                  <el-link
+                    @click="router.push(`/main/productDetail/${item.id}`)"
+                    :underline="false"
+                    >查看更多</el-link
                   >
-                    favorite
-                  </span></el-col
-                >
+                </el-col>
                 <el-col class="price" :span="8"
                   ><el-text size="large" tag="b"
                     >NT$ {{ item.price }}</el-text
@@ -83,7 +100,7 @@ const isProductInCollection = (id) => {
 }
 .product-items {
   margin: 20px 0;
-  // border: 1px solid black;
+
   .items {
     // border: 1px solid black;
     display: flex;
@@ -99,16 +116,50 @@ const isProductInCollection = (id) => {
       // &:nth-child(4n) {
       //   margin-right: 0px;
       // }
-      cursor: pointer;
-      .el-image {
-        left: 50%;
-        transform: translateX(-50%);
+      :deep() {
+        .el-card__header,
+        .el-card__footer {
+          border: none;
+        }
+        .el-card__body {
+          background-color: #f7f6f5;
+          .el-image {
+            left: 50%;
+            transform: translateX(-50%);
+          }
+          .love-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            min-height: 36px;
+            min-width: 36px;
+            background: #fff;
+            border-radius: 40px;
+            cursor: pointer;
+            .material-symbols-outlined {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -40%);
+            }
+            .fillLove {
+              color: #f69f58;
+              font-variation-settings:
+                'FILL' 100,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24;
+            }
+          }
+        }
       }
-      .love {
+
+      .more {
         justify-content: flex-start;
+        font-size: 14px;
       }
+
       .price {
-        display: flex;
         justify-content: flex-end;
       }
     }

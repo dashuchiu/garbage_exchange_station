@@ -296,7 +296,6 @@ watch(locale, (newlocale) => {
         </el-col>
       </el-row>
     </el-main>
-    <el-footer>Footer </el-footer>
   </el-container>
 </template>
 <style lang="scss" scoped>
