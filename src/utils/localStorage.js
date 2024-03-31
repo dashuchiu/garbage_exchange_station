@@ -34,3 +34,11 @@ export const getCollection = (product) => {
 export const removeCollection = (product) => {
   localStorage.removeItem('collection', product)
 }
+
+// 背景
+export const setTheme = (theme) => {
+  localStorage.setItem('theme', theme)
+}
+export const getTheme = () => {
+  return localStorage.getItem('theme') || 'light'
+}

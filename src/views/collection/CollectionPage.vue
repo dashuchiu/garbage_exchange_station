@@ -1,36 +1,11 @@
 <script setup>
 import LayoutContainer from '@/components/layout/LayoutContainer.vue'
-import { setCollection, getCollection } from '@/utils/localStorage'
+import { setCollection } from '@/utils/localStorage'
+import { inject } from 'vue'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
-const products = ref(getCollection())
-const router = useRouter()
-//搜尋功能
-const search = (val) => {
-  const keyword = val.trim() // 搜尋
-  const filterProducts = products.value.filter((product) =>
-    product.title.includes(keyword)
-  )
-  products.value = filterProducts
-}
+const { collection, isProductInCollection, cancelCollect } = inject('collect')
 
-//移除收藏
-const removeCollection = (id) => {
-  const collection = getCollection()
-  const selectedProduct = products.value.find((product) => product.id === id)
-  const check = collection.every((product) => product.id !== selectedProduct.id)
-  if (check) {
-    setCollection([...collection, selectedProduct]) // 收藏
-  } else {
-    const newCollection = collection.filter((product) => product.id !== id)
-    setCollection(newCollection) // 移除收藏
-    products.value = newCollection
-  }
-}
-const isProductInCollection = (id) => {
-  const collection = getCollection()
-  return collection.some((product) => product.id === id)
-}
+const router = useRouter()
 
 //全部移除
 const allRemove = async () => {
@@ -39,20 +14,19 @@ const allRemove = async () => {
     confirmButtonText: '確認',
     cancelButtonText: '取消'
   })
-
   setCollection([])
-  products.value = ''
+  collection.value = []
 }
 </script>
 <template>
-  <LayoutContainer @search="search">
+  <LayoutContainer>
     <template #content>
       <div class="btn-container">
         <el-button @click="allRemove" round size="large">全部移除</el-button>
       </div>
       <div class="product-items">
         <el-container class="items">
-          <el-card shadow="hover" v-for="item in products" :key="item.id">
+          <el-card shadow="hover" v-for="item in collection" :key="item.id">
             <template #header>{{ item.title }}</template>
             <el-image
               style="width: 200; height: 250px"
@@ -61,7 +35,7 @@ const allRemove = async () => {
             />
             <div class="love-btn">
               <span
-                @click="removeCollection(item.id)"
+                @click="cancelCollect(item.id)"
                 class="material-symbols-outlined"
                 :class="{ fillLove: isProductInCollection(item.id) }"
               >

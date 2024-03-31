@@ -8,4 +8,4 @@ export default pinia
 
 export * from './modules/user'
 export * from './modules/products'
-// export * from './modules/counter'
+export * from './modules/app'

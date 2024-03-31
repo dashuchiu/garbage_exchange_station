@@ -1,24 +1,9 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import {
-  productsList,
-  setCollection,
-  getCollection
-} from '@/utils/localStorage'
 import LayoutContainer from '@/components/layout/LayoutContainer.vue'
-import dayjs from 'dayjs'
-import { ref } from 'vue'
-const products = ref(productsList())
-const collection = ref(getCollection())
-//搜尋功能
-const search = (val) => {
-  const keyword = val.trim() // 搜尋
-  const filterProducts = products.value.filter((product) =>
-    product.title.includes(keyword)
-  )
-  products.value = filterProducts
-}
+import { inject } from 'vue'
 
+const { products, isProductInCollection, collect } = inject('collect')
 const casual = [
   {
     id: 1,
@@ -35,57 +20,19 @@ const casual = [
     countDown: 8
   }
 ]
-
-//收藏
-const addToCollection = (id) => {
-  const selectedProduct = products.value.find((product) => product.id === id)
-  const check = collection.value.every(
-    (product) => product.id !== selectedProduct.id
-  )
-  if (check) {
-    const newCollection = [...collection.value, selectedProduct]
-    // 1. 存進數據庫
-    setCollection(newCollection) // 收藏
-    // 2. 改變狀態 => 重渲染畫面
-    collection.value = newCollection
-    ElMessage.success('收藏成功')
-  } else {
-    const newCollection = collection.value.filter(
-      (product) => product.id !== id
-    )
-    // 1. 存進數據庫
-    setCollection(newCollection) // 移除收藏
-    // 2. 改變狀態 => 重渲染畫面
-    collection.value = newCollection
-    ElMessage.success('移除收藏')
-  }
-}
-const isProductInCollection = (id) => {
-  return collection.value.some((product) => product.id === id)
-}
-
-//倒數天數
-const diffDays = ref(null)
-const targetDate = dayjs('2024-04-01')
-const today = dayjs()
-diffDays.value = targetDate.diff(today, 'day')
-
 const router = useRouter()
 const moreProducts = () => {
   router.push(`/main/category`)
 }
 </script>
 <template>
-  <LayoutContainer @search="search">
+  <LayoutContainer>
     <template #content>
       <div class="bg"></div>
       <div class="hero">
         <div class="block text-center">
           <span class="demonstration">//本日熱門</span>
           <el-carousel height="400px" motion-blur>
-            <!-- <el-carousel-item v-for="item in 4" :key="item">
-              <h3 class="small justify-center" text="2xl">{{ item }}</h3>
-            </el-carousel-item> -->
             <el-carousel-item v-for="item in casual" :key="item.id">
               <el-row class="hot-items">
                 <el-col :span="16">
@@ -128,7 +75,7 @@ const moreProducts = () => {
             />
             <div class="love-btn">
               <span
-                @click="addToCollection(item.id)"
+                @click="collect(item.id)"
                 class="material-symbols-outlined"
                 :class="{ fillLove: isProductInCollection(item.id) }"
               >
@@ -165,7 +112,6 @@ const moreProducts = () => {
   left: 0;
   width: 100%;
   height: 500px;
-  // background-color: #f4f4f4;
   background-image: url('@/assets/main_bg.png');
   background-size: cover;
   background-position: center;
@@ -173,7 +119,6 @@ const moreProducts = () => {
 }
 .hero {
   // border: 1px solid black;
-  // height: 400px;
   width: 50%;
   margin: 15px auto;
   margin-bottom: 60px;
@@ -292,14 +237,4 @@ h3 {
   margin: 0;
   text-align: center;
 }
-
-// .el-carousel__item:nth-child(2n) {
-//   background-color: #99a9bf;
-//   border: 1px solid black;
-// }
-
-// .el-carousel__item:nth-child(2n + 1) {
-//   background-color: #ecdfcd;
-//   border: 1px solid black;
-// }
 </style>

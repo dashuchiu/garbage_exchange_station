@@ -55,11 +55,19 @@ const router = createRouter({
   ]
 })
 
-//未登入攔截
-router.beforeEach((to, from) => {
-  const useStore = useUserStore()
-  // if (!useStore.token && to.path !== '/login') return '/login'
-  if (useStore.token && to.path === '/login') return from.path
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore()
+  if (userStore.token && to.path === '/login') {
+    next(from.path)
+  } else if (!userStore.token && to.path === '/main/publish') {
+    ElMessage('請先登入')
+    next(from.path)
+  } else if (to.path === '/login') {
+    next()
+    ElMessage('請註冊或以[8@demo.com][888888]登入')
+  } else {
+    next()
+  }
 })
 
 export default router

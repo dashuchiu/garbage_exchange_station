@@ -10,19 +10,6 @@ const formModel = reactive({
   nickname: '',
   avatar: ''
 })
-//校驗規則
-// const rules = {
-//   nickname: [
-//     { required: true, message: '請輸入暱稱', trigger: 'blur' },
-//     {
-//       pattern: /^\S{1,6}$/,
-//       message: '標題必須為1-6個非空白字元',
-//       trigger: 'blur'
-//     }
-//   ],
-
-//   avatar: [{ required: true, message: '請附加照片', trigger: 'blur' }]
-// }
 //上傳圖片相關
 const imgUrl = ref('')
 const onUploadFile = (uploadFile) => {

@@ -1,20 +1,29 @@
 <script setup>
-import { useUserStore } from '@/stores'
+import { useUserStore, useAppStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 import { UserFilled, Search } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import { getUsrtInfo } from '@/utils/localStorage'
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
+import { setTheme, getTheme } from '@/utils/localStorage'
 const userStore = useUserStore()
+const { isLightMode, setIsLightMode } = useAppStore()
+
 const router = useRouter()
+
+const { products } = inject('collect')
 
 //搜尋功能
 const input = ref('')
-const emit = defineEmits(['search'])
-const handleSearch = () => {
-  // console.log(input.value)
-  emit('search', input.value)
+
+//搜尋功能
+const search = (val) => {
+  const keyword = val.trim() // 搜尋
+  const filterProducts = products.value.filter((product) =>
+    product.title.includes(keyword)
+  )
+  products.value = filterProducts
 }
 
 onMounted(() => {
@@ -22,7 +31,6 @@ onMounted(() => {
 })
 //會員資訊>email
 const { userInfo: userInfo } = getUsrtInfo()
-// console.log(userInfo.email)
 
 const publish = () => {
   router.push('/main/publish')
@@ -48,12 +56,20 @@ const onCommand = async (command) => {
 const login = () => {
   router.push(`/login`)
 }
-// const hotProducts = () => {
-//   router.push(`/main/hotProducts`)
-// }
 const category = () => {
   router.push(`/main/category`)
 }
+const setBodyThemeClass = (theme) => {
+  const body = document.body
+  body.className = ''
+  body.classList.toggle(theme)
+}
+const toggleTheme = () => {
+  setIsLightMode(!isLightMode)
+  setTheme(!isLightMode ? 'light' : 'dark') // localStorage => 'dark'
+  setBodyThemeClass(getTheme('theme')) // 'dark'
+}
+// watch()
 </script>
 
 <template>
@@ -65,18 +81,18 @@ const category = () => {
             <el-link href="/" :underline="false">
               <el-image
                 style="width: 150px; height: 150px"
-                src="/src/assets/logo.png"
+                src="/src/assets/garbage_main_logo.png"
                 fit="contain"
               />
             </el-link>
-            <!-- <el-link @click="hotProducts" :underline="false">熱門</el-link> -->
             <el-link @click="category" :underline="false">分類</el-link>
+            <el-link @click="toggleTheme" :underline="false">背景切換</el-link>
             <el-input
               clearable
               style="width: 250px"
               :suffix-icon="Search"
               v-model="input"
-              @input="handleSearch"
+              @input="search"
               placeholder="找廢物"
             ></el-input>
           </el-col>

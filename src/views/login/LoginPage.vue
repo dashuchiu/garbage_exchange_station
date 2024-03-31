@@ -159,7 +159,9 @@ watch(locale, (newlocale) => {
 <template>
   <el-container>
     <el-header class="nav">
-      <a href="/"><img class="logo" src="@/assets/logo.svg" alt="" /></a>
+      <a href="/"
+        ><img class="logo" src="@/assets/garbage_login_logo.png" alt=""
+      /></a>
 
       <el-dropdown>
         <span class="el-dropdown-link">
@@ -304,9 +306,10 @@ watch(locale, (newlocale) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
+  height: 120px;
+  padding: 0 50px;
   .logo {
-    width: 50%;
+    width: 35%;
   }
   .el-dropdown-link {
     cursor: pointer;
@@ -325,13 +328,16 @@ watch(locale, (newlocale) => {
     position: fixed;
     top: 0;
     left: 0;
+    // transform: translateX(-50%);
     bottom: 0;
     right: 0;
     z-index: -999;
-    background-image: url('@/assets/login_bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    // background-image: url('@/assets/garbage_login_logo.png');
+    background-color: #f7f6f5;
+    // width: 50%;
+    // background-size: contain;
+    // background-position: center;
+    // background-repeat: no-repeat;
   }
   .form {
     margin: 40px;
@@ -346,7 +352,7 @@ watch(locale, (newlocale) => {
       width: 400px;
       height: 100%;
       border-radius: 4px;
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(0, 0, 0, 0.05);
       box-shadow: 0 8px 10px 0 rgba(0, 0, 0, 0.2);
       top: 0;
       left: 50%;

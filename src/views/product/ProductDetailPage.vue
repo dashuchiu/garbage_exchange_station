@@ -3,70 +3,31 @@ import LayoutContainer from '@/components/layout/LayoutContainer.vue'
 import { copyByText } from '@/utils/copy'
 import { Link, UserFilled } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
-import dayjs from 'dayjs'
-import { ref, computed } from 'vue'
-import {
-  productsList,
-  setCollection,
-  getCollection
-} from '@/utils/localStorage'
+import { ref, inject, onMounted, computed } from 'vue'
+import { countDown } from '@/utils/common'
 import { commentApi } from '@/api/mock/module/data'
 const input = ref('')
 const rate = ref(3.7)
 const route = useRoute()
 const routeId = route.params.id
-const collection = ref(getCollection())
-const products = ref(productsList())
+const productUrl = ref(window.location.href)
+const { isProductInCollection, collect, products } = inject('collect')
+
 const product = computed(() =>
   products.value.find((product) => product.id === routeId)
 )
-const productUrl = ref(window.location.href)
-
-//收藏
-const addToCollection = (id) => {
-  const selectedProduct = products.value.find((product) => product.id === id)
-  const check = collection.value.every(
-    (product) => product.id !== selectedProduct.id
-  )
-  if (check) {
-    const newCollection = [...collection.value, selectedProduct]
-    // 1. 存進數據庫
-    setCollection(newCollection) // 收藏
-    // 2. 改變狀態 => 重渲染畫面
-    collection.value = newCollection
-    ElMessage.success('收藏成功')
-  } else {
-    const newCollection = collection.value.filter(
-      (product) => product.id !== id
-    )
-    // 1. 存進數據庫
-    setCollection(newCollection) // 移除收藏
-    // 2. 改變狀態 => 重渲染畫面
-    collection.value = newCollection
-    ElMessage.success('移除收藏')
-  }
-}
-const isProductInCollection = (id) => {
-  return collection.value.some((product) => product.id === id)
-}
-
-//倒數天數
-const diffDays = ref(null)
-const targetDate = dayjs(product.value.date)
-const today = dayjs()
-diffDays.value = targetDate.diff(today, 'day')
+const getCountDown = computed(() => countDown(routeId))
 
 //留言
 const comment = ref([])
-const getCommetList = async () => {
+const getCommentList = async () => {
   const data = await commentApi.getComment()
   comment.value = data[routeId]
   comment.value.forEach((item) => {
     item.avatar = item.author.slice(0, 2)
   })
-  console.log(comment.value)
 }
-getCommetList()
+onMounted(() => getCommentList())
 </script>
 <template>
   <LayoutContainer>
@@ -81,15 +42,15 @@ getCommetList()
               ></div>
               <div class="love-btn">
                 <span
-                  @click="addToCollection(product.id)"
+                  @click="collect(product.id)"
                   class="material-symbols-outlined"
                   :class="{ fillLove: isProductInCollection(product.id) }"
                 >
                   favorite
                 </span>
               </div>
-            </div></el-col
-          >
+            </div>
+          </el-col>
           <el-col class="imgCard-right" :span="9">
             <div class="product-title">{{ product.title }}</div>
             <div class="seller-card">
@@ -111,7 +72,7 @@ getCommetList()
             </div>
             <div class="time-items">
               <span class="material-symbols-outlined"> timer </span>
-              <span>倒數{{ diffDays }}天</span>
+              <span>倒數{{ getCountDown }}天</span>
             </div>
             <div class="buy-items">
               <el-button class="buy" type="primary" round size="large"

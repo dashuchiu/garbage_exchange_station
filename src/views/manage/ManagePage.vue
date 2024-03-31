@@ -4,9 +4,6 @@ import { productsList } from '@/utils/localStorage'
 import { Edit, Delete } from '@element-plus/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ref, computed } from 'vue'
-// import dayjs from 'dayjs'
-// const currentTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
-// console.log(currentTime)
 const products = ref(productsList())
 const route = useRoute()
 const router = useRouter()

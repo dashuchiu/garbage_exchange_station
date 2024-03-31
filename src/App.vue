@@ -1,6 +1,8 @@
 <script setup>
 import { useProductsStore } from '@/stores'
-import { productsList } from '@/utils/localStorage'
+import { productsList, getCollection } from '@/utils/localStorage'
+import { addToCollection, removeCollection } from '@/utils/collect'
+import { onBeforeMount, ref, provide } from 'vue'
 
 const productsStore = useProductsStore()
 
@@ -9,7 +11,28 @@ const getProductList = () => {
     productsStore.getProductsList()
   }
 }
-getProductList()
+const products = ref(productsList())
+const collection = ref(getCollection())
+const collect = (id) => {
+  addToCollection(id)
+  collection.value = getCollection()
+}
+const cancelCollect = (id) => {
+  removeCollection(id)
+  collection.value = getCollection()
+}
+const isProductInCollection = (id) => {
+  return collection.value.some((product) => product.id === id)
+}
+
+provide('collect', {
+  products,
+  collection,
+  collect,
+  cancelCollect,
+  isProductInCollection
+})
+onBeforeMount(() => getProductList())
 </script>
 <template>
   <router-view></router-view>
