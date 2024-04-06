@@ -4,33 +4,67 @@ import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 import { UserFilled, Search } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
-import { getUsrtInfo } from '@/utils/localStorage'
 import { ref, inject } from 'vue'
 import { setTheme, getTheme } from '@/utils/localStorage'
+import { useI18n } from 'vue-i18n'
+const { t, locale } = useI18n()
+console.log(locale)
 const userStore = useUserStore()
 const { isLightMode, setIsLightMode } = useAppStore()
 
 const router = useRouter()
 
-const { products } = inject('collect')
-
 //搜尋功能
-const input = ref('')
+const state = ref('')
+const links = ref([])
 
-//搜尋功能
-const search = (val) => {
-  const keyword = val.trim() // 搜尋
-  const filterProducts = products.value.filter((product) =>
-    product.title.includes(keyword)
-  )
-  products.value = filterProducts
+const loadAll = () => {
+  const { products } = inject('collect')
+  return products.value || []
 }
 
+let timeout
+const querySearchAsync = (queryString, cb) => {
+  if (!queryString) {
+    cb([])
+    return
+  }
+
+  const results = links.value.filter(createFilter(queryString))
+  clearTimeout(timeout)
+  timeout = setTimeout(() => {
+    if (results.length === 0) {
+      cb([{ title: '暫無數據' }])
+      console.log(results)
+    } else {
+      cb(results)
+      console.log(results)
+    }
+  }, 1000 * Math.random())
+}
+
+const createFilter = (queryString) => {
+  return (restaurant) => {
+    return (
+      restaurant.title.toLowerCase().indexOf(queryString.trim().toLowerCase()) >
+      -1
+    )
+  }
+}
+
+const handleSelect = (item) => {
+  console.log(item)
+  if (item.id) {
+    router.push(`/main/productDetail/${item.id}`)
+  }
+}
+// const user = userInfo
 onMounted(() => {
   userStore.getUser()
+  links.value = loadAll()
 })
 //會員資訊>email
-const { userInfo: userInfo } = getUsrtInfo()
+const userInfo = ref(userStore.userInfo)
 
 const publish = () => {
   router.push('/main/publish')
@@ -78,23 +112,26 @@ const toggleTheme = () => {
       <el-header class="nav">
         <el-row>
           <el-col :span="20">
-            <el-link href="/" :underline="false">
-              <el-image
-                style="width: 150px; height: 150px"
-                src="/src/assets/garbage_main_logo.png"
-                fit="contain"
+            <el-link @click="router.push(`/main`)" :underline="false">
+              <img
+                style="width: 120px"
+                src="@/assets/garbage_main_logo.png"
+                alt=""
               />
             </el-link>
-            <el-link @click="category" :underline="false">分類</el-link>
+            <el-link @click="category" :underline="false">{{
+              t('common.category')
+            }}</el-link>
             <el-link @click="toggleTheme" :underline="false">背景切換</el-link>
-            <el-input
-              clearable
-              style="width: 250px"
+            <el-autocomplete
+              v-model="state"
+              :fetch-suggestions="querySearchAsync"
+              :placeholder="t('placeholder.search')"
+              :clearable="true"
               :suffix-icon="Search"
-              v-model="input"
-              @input="search"
-              placeholder="找廢物"
-            ></el-input>
+              value-key="title"
+              @select="handleSelect"
+            />
           </el-col>
           <el-col class="r-nav" :span="4">
             <el-button
@@ -112,14 +149,24 @@ const toggleTheme = () => {
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="account">帳號</el-dropdown-item>
-                  <el-dropdown-item command="collection">收藏</el-dropdown-item>
-                  <el-dropdown-item command="manage">管理</el-dropdown-item>
-                  <el-dropdown-item command="logout">登出</el-dropdown-item>
+                  <el-dropdown-item command="account">{{
+                    t('common.account')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item command="collection">{{
+                    t('common.collect')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item command="manage">{{
+                    t('common.manage')
+                  }}</el-dropdown-item>
+                  <el-dropdown-item command="logout">{{
+                    t('common.logout')
+                  }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <el-button @click="publish" round size="large">丟廢物</el-button>
+            <el-button @click="publish" round size="large">{{
+              t('common.publish')
+            }}</el-button>
           </el-col>
         </el-row>
       </el-header>

@@ -5,7 +5,13 @@
     "signup": "註冊",
     "return": "返回",
     "remember": "記住我",
-    "forget": "忘記密碼?"
+    "forget": "忘記密碼?",
+    "category":"分類",
+    "publish":"丟廢物",
+    "account":"帳號",
+    "collect":"收藏",
+    "manage":"管理",
+    "popular":"本日熱門"
   },
   "messages": {
     "login_success": "登入成功"
@@ -13,6 +19,7 @@
   "placeholder": {
     "email": "請輸入電子郵件",
     "password":"請輸入密碼",
-    "repassword":"請再次輸入密碼"
+    "repassword":"請再次輸入密碼",
+    "search":"找廢物"
   }
 }

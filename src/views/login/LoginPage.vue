@@ -17,9 +17,7 @@ import {
   signInWithEmailAndPassword
 } from 'firebase/auth'
 import { dataApi } from '@/api/mock/module/data'
-
 const { t, locale } = useI18n()
-console.log(locale)
 const route = useRoute()
 console.log(route)
 // const langs = ref(['zh-TW', 'en-US'])

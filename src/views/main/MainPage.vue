@@ -2,7 +2,9 @@
 import { useRouter } from 'vue-router'
 import LayoutContainer from '@/components/layout/LayoutContainer.vue'
 import { inject } from 'vue'
-
+import { useI18n } from 'vue-i18n'
+const { t, locale } = useI18n()
+console.log(locale)
 const { products, isProductInCollection, collect } = inject('collect')
 const casual = [
   {
@@ -31,7 +33,7 @@ const moreProducts = () => {
       <div class="bg"></div>
       <div class="hero">
         <div class="block text-center">
-          <span class="demonstration">//本日熱門</span>
+          <span class="demonstration">//{{ t('common.popular') }}</span>
           <el-carousel height="400px" motion-blur>
             <el-carousel-item v-for="item in casual" :key="item.id">
               <el-row class="hot-items">
@@ -119,7 +121,7 @@ const moreProducts = () => {
 }
 .hero {
   // border: 1px solid black;
-  width: 50%;
+  width: 55%;
   margin: 15px auto;
   margin-bottom: 60px;
 }

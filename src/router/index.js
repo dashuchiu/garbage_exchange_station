@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/stores'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -23,20 +23,12 @@ const router = createRouter({
           component: () => import('@/views/publish/PublishPage.vue')
         },
         {
-          path: '/main/more',
-          component: () => import('@/views/more/MoreProducts.vue')
-        },
-        {
           path: '/main/account',
           component: () => import('@/views/account/AccountPage.vue')
         },
         {
           path: '/main/collection',
           component: () => import('@/views/collection/CollectionPage.vue')
-        },
-        {
-          path: '/main/hotProducts',
-          component: () => import('@/views/hot/HotPage.vue')
         },
         {
           path: '/main/category',

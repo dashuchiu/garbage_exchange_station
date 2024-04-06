@@ -5,7 +5,13 @@
     "signup": "Sign up",
     "return": "Return",
     "remember": "Remember Me",
-    "forget": "Forget the Password?"
+    "forget": "Forget the Password?",
+    "category":"Category",
+    "publish":"Publish",
+    "account":"Account",
+    "collect":"Collect",
+    "manage":"Manage",
+    "popular":"Popular Today"
   },
   "messages": {
     "login_success": "Login Success"
@@ -13,6 +19,7 @@
   "placeholder": {
     "email": "Email",
     "password":"Password",
-    "repassword":"Password again"
+    "repassword":"Password again",
+    "search":"search"
   }
 }
