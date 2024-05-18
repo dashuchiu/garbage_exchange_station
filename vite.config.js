@@ -24,7 +24,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: '/demo', //更改成相對路徑
+  base: '/', //更改成相對路徑
   build: {
     rollupOptions: {
       output: {

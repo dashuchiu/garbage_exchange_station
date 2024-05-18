@@ -1,35 +1,46 @@
-# garbage_exchange_station
+# garbage exchange station
 
-This template should help get you started developing with Vue 3 in Vite.
+DEMO:[garbage_exchange_station](https://dashuchiu.github.io/demo/#/main)  
+使用vue3、樣式框架為Element UI開發的廢物交換網站。
++ 前端框架： Vue3 + Vue router + pinia + axios
++ 前端UI框架及樣式: Element UI/SCSS
++ 打包工具: Vite
 
-## Recommended IDE Setup
+## 登入
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+功能:  
++ JWT實現token-based登入、註冊驗證機制。    
+      
+![img](./src/assets/jwt.png)
 
-## Customize configuration
+## 收藏
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+功能:  
++ 加入/取消收藏。
+ 
+      
+![img](./src/assets/collect.png)
 
-## Project Setup
+## i18n語言切換
 
-```sh
-npm install
-```
+功能:  
++ 中英文切換。
+ 
 
-### Compile and Hot-Reload for Development
+![img](./src/assets/i18n.png)
 
-```sh
-npm run dev
-```
+## 查找
 
-### Compile and Minify for Production
+功能:  
++ 搜尋廢物。
+ 
 
-```sh
-npm run build
-```
+![img](./src/assets/search.png)
 
-### Lint with [ESLint](https://eslint.org/)
+## vue-quill編輯器
 
-```sh
-npm run lint
-```
+功能:  
++ 使用編輯器新增廢物。
+ 
+
+![img](./src/assets/quill.png)
