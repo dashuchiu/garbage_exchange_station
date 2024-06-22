@@ -4,11 +4,11 @@ import { ref } from 'vue'
 export const useAppStore = defineStore(
   'app',
   () => {
-    const isLightMode = ref(true)
-    const setIsLightMode = (theme) => (isLightMode.value = theme)
+    const isDarkMode = ref(false)
+    const setIsDarkMode = (theme) => (isDarkMode.value = theme)
     return {
-      isLightMode,
-      setIsLightMode
+      isDarkMode,
+      setIsDarkMode
     }
   },
   {

@@ -1,18 +1,20 @@
 <script setup>
-import { useUserStore, useAppStore } from '@/stores'
+import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
-import { UserFilled, Search } from '@element-plus/icons-vue'
+import { UserFilled, Search, Sunrise, Moon } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import { ref, inject } from 'vue'
-import { setTheme, getTheme } from '@/utils/localStorage'
 import { useI18n } from 'vue-i18n'
+import { useDark, useToggle } from '@vueuse/core'
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 const { t, locale } = useI18n()
 console.log(locale)
 const userStore = useUserStore()
-const { isLightMode, setIsLightMode } = useAppStore()
-
+// const appStore = useAppStore()
 const router = useRouter()
+// const isDarkTheme = ref(appStore.isDarkMode)
 
 //搜尋功能
 const state = ref('')
@@ -93,17 +95,11 @@ const login = () => {
 const category = () => {
   router.push(`/main/category`)
 }
-const setBodyThemeClass = (theme) => {
-  const body = document.body
-  body.className = ''
-  body.classList.toggle(theme)
-}
-const toggleTheme = () => {
-  setIsLightMode(!isLightMode)
-  setTheme(!isLightMode ? 'light' : 'dark') // localStorage => 'dark'
-  setBodyThemeClass(getTheme('theme')) // 'dark'
-}
-// watch()
+
+// const toggleTheme = () => {
+//   isDarkTheme.value = !appStore.isDarkMode
+//   appStore.setIsDarkMode(!appStore.isDarkMode)
+// }
 </script>
 
 <template>
@@ -122,7 +118,14 @@ const toggleTheme = () => {
             <el-link @click="category" :underline="false">{{
               t('common.category')
             }}</el-link>
-            <el-link @click="toggleTheme" :underline="false">背景切換</el-link>
+            <!-- <el-link @click="toggleTheme" :underline="false">背景切換</el-link> -->
+            <span @click.stop="toggleDark()"></span>
+            <!-- <el-switch size="small" v-model="isDark" /> -->
+            <el-switch
+              v-model="isDark"
+              :active-action-icon="Moon"
+              :inactive-action-icon="Sunrise"
+            />
             <el-autocomplete
               v-model="state"
               :fetch-suggestions="querySearchAsync"
@@ -178,6 +181,9 @@ const toggleTheme = () => {
   </div>
 </template>
 <style lang="scss" scoped>
+.bgDark {
+  background-color: #2c2c2c;
+}
 .nav {
   // border: 1px solid black;
   height: 120px;
@@ -194,8 +200,11 @@ const toggleTheme = () => {
       margin: 0 20px;
       font-size: 20px;
     }
+    .el-switch {
+      margin-right: 20px;
+    }
     .el-input {
-      margin-left: 30px;
+      margin-left: 60px;
     }
     .r-nav {
       display: flex;

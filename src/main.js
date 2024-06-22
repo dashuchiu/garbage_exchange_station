@@ -4,6 +4,7 @@ import router from './router'
 import pinia from '@/stores/index'
 import 'element-plus/theme-chalk/src/message-box.scss'
 import 'element-plus/theme-chalk/src/message.scss'
+import '@/assets/style/dark_var.scss'
 import i18n from './i18n'
 import '@/mock/mockServer'
 

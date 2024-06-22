@@ -6,8 +6,12 @@
         "img": "https://firebasestorage.googleapis.com/v0/b/vue3-auth-5f3bf.appspot.com/o/product%2Fproduct01.jpg?alt=media&token=bcc5929c-76fc-47d3-b0c7-d8686a196ff8",
         "content": "我這款炸蝦玩偶吊飾是您日常生活中的趣味小物。它以逼真的炸蝦造型設計，讓人忍不住想要摸摸看！採用高品質的材料製作，手感舒適且耐用。吊飾上方附有環狀吊繩，方便您將其掛在包包、鑰匙串或手機上，為您的物品增添趣味和個性。無論是自用還是送禮，這款炸蝦玩偶吊飾都是絕佳的選擇。快來擁有它，讓您的生活更加有趣！",
         "price": "150",
-        "date":"2024-5-15",
-        "author":"小娜"
+        "date":"2024-9-15",
+        "author":"小娜",
+        "comments": [
+          {"id": 1, "author":"wang88", "content": "請問尺寸？"},
+          {"id": 2, "author":"二二", "content": "可愛耶"}
+        ]
     },
     {
         "id": "2",
@@ -16,8 +20,11 @@
         "img": "https://firebasestorage.googleapis.com/v0/b/vue3-auth-5f3bf.appspot.com/o/product%2Fproduct02.jpg?alt=media&token=7fa14c82-728d-497d-9183-64078be1258b",
         "content": "這款0元法鼓山春聯是新年送福利的絕佳選擇！春聯以法鼓山獨特的設計風格呈現，寓意吉祥如意、平安健康。採用高品質紙張製作，色彩鮮豔、細緻，質感上乘。不僅可以黏貼在門窗上，增添新年節日氛圍，還可以作為收藏價值的文化遺產。無論是自用還是送給親朋好友，都是展現心意的完美禮物。趕快來領取這份新年的吉祥福利，和法鼓山一起迎接新的一年吧！",
         "price": "0",
-        "date":"2024-5-7",
-        "author":"阿土伯"
+        "date":"2024-9-7",
+        "author":"阿土伯",
+         "comments": [
+            {"id": 1, "author":"奇怪阿姨", "content": "只有一張嗎?"}
+        ]
     },
     {
         "id": "3",
@@ -26,8 +33,12 @@
         "img": "https://firebasestorage.googleapis.com/v0/b/vue3-auth-5f3bf.appspot.com/o/product%2Fproduct03.jpg?alt=media&token=c200a7a9-40c7-4834-aa3a-33dbcd6543da",
         "content": "這款動物森友會Switch遊戲片讓您擁有獨一無二的島嶼生活體驗！遊戲中您可以建立自己的夢想島嶼，與可愛的動物們成為朋友，探索無盡的冒險。遊戲充滿樂趣和挑戰，讓您可以放鬆身心，享受遊戲帶來的樂趣。這款遊戲片支援Switch主機，畫面精美細膩，操作流暢。不僅適合自己玩樂，還是送禮的絕佳選擇。無論是單人冒險還是與朋友一起遊玩，動物森友會都會帶給您難忘的遊戲體驗！",
         "price": "500",
-        "date":"2024-7-2",
-        "author":"Jack"
+        "date":"2024-9-2",
+        "author":"Jack",
+         "comments": [
+            {"id": 1, "author":"max", "content": "入手多久了?"},
+            {"id": 2, "author":"小馬愛睡覺", "content": "面交地點哪邊方便?"}
+        ]
     },
     {
         "id": "4",
@@ -36,8 +47,12 @@
         "img": "https://firebasestorage.googleapis.com/v0/b/vue3-auth-5f3bf.appspot.com/o/product%2Fproduct04.jpg?alt=media&token=7c9491d6-6958-4f55-ac4e-cf16e532b940",
         "content": "這款電影妄想代理人特典收藏品以膠片設計呈現，獨特而精美。收藏品將帶您深入電影的奇幻世界，展現獨特的藝術風格。",
         "price": "1500",
-        "date":"2024-7-12",
-        "author":"子承"
+        "date":"2024-11-12",
+        "author":"子承",
+         "comments": [
+            {"id": 1, "author":"ray85", "content": "還有其他張嗎?"},
+            {"id": 2, "author":"小張", "content": "這不錯"}
+        ]
     },
     {
         "id": "5",
@@ -46,8 +61,13 @@
         "img": "https://cdn.dummyjson.com/product-images/53/thumbnail.jpg",
         "content": "這款印有高品質圖案的T恤是時尚與舒適的完美結合。我們採用優質印刷技術，確保圖案清晰、色彩鮮艷且持久耐穿。T恤採用柔軟舒適的面料製成，觸感柔和，適合日常穿著。不論您是要外出活動還是休閒放鬆，這款T恤都能滿足您的需求。多款風格和顏色可供選擇，適合男女穿著。無論是自己穿著還是送給親朋好友，這款T恤都是時尚又實用的選擇。",
         "price": "900",
-        "date":"2024-6-8",
-        "author":"多多"
+        "date":"2025-6-8",
+        "author":"多多",
+         "comments": [
+            {"id": 1, "author":"白白", "content": "是兩件一起?"},
+            {"id": 2, "author":"淡水主唱", "content": "尺寸是?"},
+            {"id": 3, "author":"廖桑愛喝酒", "content": "全新還是二手?"}
+        ]
     },
     {
         "id": "6",
@@ -56,8 +76,13 @@
         "img": "https://cdn.dummyjson.com/product-images/83/thumbnail.jpg",
         "content": "Wiley X墨鏡結合了極致的保護和時尚設計，是極限運動和戶外活動的理想選擇。其採用先進的防護技術，如碎片防護和100%防紫外線保護，確保您的眼睛在任何環境下都得到最佳保護。同時，其時尚的外觀設計讓您無論在山頂或城市中都能展現出色風采。無論是徒步旅行、摩托車騎行還是日常穿戴，Wiley X墨鏡都能讓您在風格和功能上都表現出眾。",
         "price": "1250",
-        "date":"2024-5-25",
-        "author":"chen415"
+        "date":"2024-10-25",
+        "author":"chen415",
+         "comments": [
+            {"id": 1, "author":"愛跳舞的成龍", "content": "可否店到店"},
+            {"id": 2, "author":"哈哈", "content": "只有一個?"},
+            {"id": 3, "author":"亂掰作家", "content": "在哪買的阿?"}
+        ]
     },
     {
         "id": "7",
@@ -66,8 +91,13 @@
         "img": "https://cdn.dummyjson.com/product-images/7/thumbnail.jpg",
         "content": "這台二手筆電原價42000元，現價優惠出售。它的外觀和功能狀況都極為良好，保持著9成新的狀態。筆電配置高效，適合處理日常工作和娛樂需求。輕薄便攜，適合隨身攜帶。無論是工作還是娛樂，這台筆電都能滿足您的需求。如果您正在尋找性能優良、外觀優美的二手筆電，這台絕對是您的不二之選。",
         "price": "2000",
-        "date":"2024-6-21",
-        "author":"發財二手店"
+        "date":"2024-12-21",
+        "author":"發財二手店",
+         "comments": [
+            {"id": 1, "author":"好吃車輪餅", "content": "品牌哪一家"},
+            {"id": 2, "author":"敗家浪子", "content": "記憶體多少?"},
+            {"id": 3, "author":"告六人", "content": "台北捷運面交可以?"}
+        ]
     },
     {
         "id": "8",
@@ -76,7 +106,11 @@
         "img": "https://firebasestorage.googleapis.com/v0/b/vue3-auth-5f3bf.appspot.com/o/product%2Fproduct05.jpg?alt=media&token=459844fd-3489-4553-8586-003b5ef0e2c5",
         "content": "這一堆扭蛋絕對是收藏家和玩家的夢幻之選，只能新竹面交。",
         "price": "200",
-        "date":"2024-7-25",
-        "author":"隨便賣"
+        "date":"2024-10-25",
+        "author":"隨便賣",
+         "comments": [
+            {"id": 1, "author":"IU1991", "content": "可以只要貓嗎?"},
+            {"id": 2, "author":"中產階級ECO陳", "content": "滿可愛的"}
+        ]
     }
 ]

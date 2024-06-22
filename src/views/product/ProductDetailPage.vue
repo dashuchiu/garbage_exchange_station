@@ -3,14 +3,16 @@ import LayoutContainer from '@/components/layout/LayoutContainer.vue'
 import { copyByText } from '@/utils/copy'
 import { Link, UserFilled } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
-import { ref, inject, onMounted, computed } from 'vue'
+import { ref, inject, computed } from 'vue'
 import { countDown } from '@/utils/common'
-import { commentApi } from '@/api/mock/module/data'
+import { useUserStore } from '@/stores'
+
 const input = ref('')
 const rate = ref(3.7)
 const route = useRoute()
 const routeId = route.params.id
 const productUrl = ref(window.location.href)
+const userEmail = ref(useUserStore().userInfo.email)
 const { isProductInCollection, collect, products } = inject('collect')
 
 const product = computed(() =>
@@ -20,14 +22,53 @@ const getCountDown = computed(() => countDown(routeId))
 
 //留言
 const comment = ref([])
-const getCommentList = async () => {
-  const data = await commentApi.getComment()
-  comment.value = data[routeId]
-  comment.value.forEach((item) => {
-    item.avatar = item.author.slice(0, 2)
-  })
+comment.value = product.value.comments
+comment.value.forEach((item) => {
+  item.avatar = item.author.slice(0, 2)
+})
+console.log(comment.value)
+//只取@之前的帳號名稱
+const userName = computed(() => {
+  return userEmail.value.split('@')[0]
+})
+
+const handleInput = (val) => {
+  console.log(val)
+  input.value = val
 }
-onMounted(() => getCommentList())
+const addComment = () => {
+  comment.value = [
+    ...comment.value,
+    {
+      id: Math.floor(Math.random() * 1000),
+      author: userName.value,
+      avatar: userName.value.slice(0, 2),
+      content: input.value
+    }
+  ]
+  input.value = ''
+}
+//點擊我要廢物輸入金額
+const inputPrice = () => {
+  ElMessageBox.prompt('請輸入金額', '我要廢物', {
+    confirmButtonText: '確認',
+    cancelButtonText: '取消',
+    inputPattern: /^(0|[1-9][0-9]{0,4}|100000)$/,
+    inputErrorMessage: '請出入金額0-100000'
+  })
+    .then(({ value }) => {
+      ElMessage({
+        type: '出價成功',
+        message: `出價金額為:${value}元`
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: '提示',
+        message: '出價取消'
+      })
+    })
+}
 </script>
 <template>
   <LayoutContainer>
@@ -75,7 +116,12 @@ onMounted(() => getCommentList())
               <span>倒數{{ getCountDown }}天</span>
             </div>
             <div class="buy-items">
-              <el-button class="buy" type="primary" round size="large"
+              <el-button
+                @click="inputPrice"
+                class="buy"
+                type="primary"
+                round
+                size="large"
                 >我要廢物</el-button
               >
               <el-button
@@ -94,13 +140,17 @@ onMounted(() => getCommentList())
         <div class="replay-box">
           <div class="left">
             <el-avatar :icon="UserFilled" />
+            <div class="userName">{{ userName }}</div>
             <el-input
-              v-model="input"
+              @input="handleInput"
+              v-model.trim="input"
               style="width: 92%; height: 40px"
               placeholder="留個言吧"
             />
           </div>
-          <el-button class="buy" type="primary" size="large">送出</el-button>
+          <el-button @click="addComment" class="buy" type="primary" size="large"
+            >送出</el-button
+          >
         </div>
         <div class="comment-box" v-for="item in comment" :key="item.id">
           <el-avatar>{{ item.avatar }}</el-avatar>
@@ -240,6 +290,7 @@ onMounted(() => getCommentList())
 
   .left {
     display: flex;
+    align-items: center;
     width: 100%;
     *:not(:last-child) {
       margin-right: 20px;

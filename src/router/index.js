@@ -23,6 +23,10 @@ const router = createRouter({
           component: () => import('@/views/publish/PublishPage.vue')
         },
         {
+          path: '/main/publish/:id',
+          component: () => import('@/views/publish/PublishPage.vue')
+        },
+        {
           path: '/main/account',
           component: () => import('@/views/account/AccountPage.vue')
         },

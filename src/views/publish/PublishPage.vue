@@ -1,27 +1,35 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { productsList } from '@/utils/localStorage'
 import { Plus } from '@element-plus/icons-vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import LayoutContainer from '@/components/layout/LayoutContainer.vue'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { useProductsStore } from '@/stores'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const routeId = useRoute().params.id
 const productsStore = useProductsStore()
 const products = ref(productsList())
 const form = ref()
+const product = computed(() =>
+  products.value.find((product) => product.id === routeId)
+)
+console.log(product.value)
 //表單
 const formModel = reactive({
-  id: String(Math.round(Math.random() * 1000)),
-  title: '',
-  category: '',
-  img: '',
-  content: '',
-  price: '',
-  date: ''
+  id: product.value
+    ? product.value.id
+    : String(Math.round(Math.random() * 1000)),
+  title: product.value ? product.value.title : '',
+  category: product.value ? product.value.category : '',
+  img: product.value ? product.value.img : '',
+  content: product.value ? product.value.content : '',
+  price: product.value ? product.value.price : '',
+  date: product.value ? product.value.date : ''
 })
+console.log(formModel)
 //校驗規則
 const rules = {
   title: [
@@ -51,10 +59,17 @@ const post = async () => {
     await form.value.validate()
 
     ElMessage.success('送出成功')
-    //新增
-    const newProducts = [...products.value, formModel]
-    productsStore.setProductList(newProducts)
-    router.push('/main')
+    //如果是編輯重新儲存
+    if (product.value) {
+      products.value[routeId - 1] = formModel
+      productsStore.setProductList(products.value)
+      router.push('/main')
+    } else {
+      //新增
+      const newProducts = [...products.value, formModel]
+      productsStore.setProductList(newProducts)
+      router.push('/main')
+    }
   } catch (error) {
     console.log(error.code)
   }
@@ -99,6 +114,12 @@ const options = [
 ]
 //上傳圖片相關
 const imgUrl = ref('')
+//編輯的圖片回顯
+if (product.value) {
+  imgUrl.value = product.value.img
+  formModel.img = imgUrl.value
+}
+//發布的上傳圖片
 const onUploadFile = (uploadFile) => {
   imgUrl.value = URL.createObjectURL(uploadFile.raw) //預覽圖片
   formModel.img = imgUrl.value

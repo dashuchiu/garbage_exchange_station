@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 const { t, locale } = useI18n()
 console.log(locale)
 const { products, isProductInCollection, collect } = inject('collect')
+
 const casual = [
   {
     id: 1,
@@ -30,7 +31,7 @@ const moreProducts = () => {
 <template>
   <LayoutContainer>
     <template #content>
-      <div class="bg"></div>
+      <div class="bg dark-img-bg"></div>
       <div class="hero">
         <div class="block text-center">
           <span class="demonstration">//{{ t('common.popular') }}</span>

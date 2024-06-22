@@ -1,20 +1,25 @@
 <script setup>
 import LayoutContainer from '@/components/layout/LayoutContainer.vue'
-import { productsList } from '@/utils/localStorage'
+import { productsList, setProducts } from '@/utils/localStorage'
 import { Edit, Delete } from '@element-plus/icons-vue'
-import { useRouter, useRoute } from 'vue-router'
-import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 const products = ref(productsList())
-const route = useRoute()
+// const route = useRoute()
 const router = useRouter()
-const routeId = route.params.id
-const product = computed(() =>
-  products.value.find((product) => product.id === routeId)
-)
-const formModel = ref(null)
-const editProduct = () => {
-  router.push('/main/publish')
-  formModel.value = product.value
+// const routeId = route.params.id
+// const product = computed(() =>
+//   products.value.find((product) => product.id === routeId)
+// )
+
+const editProduct = (id) => {
+  // console.log(id)
+  router.push(`/main/publish/${id}`)
+}
+const deleteProduct = (id) => {
+  const newProduct = products.value.filter((product) => product.id !== id)
+  products.value = newProduct
+  setProducts(newProduct)
 }
 </script>
 <template>
@@ -31,19 +36,20 @@ const editProduct = () => {
             />
             <span class="btn"
               ><el-button
-                @click="editProduct"
+                @click="editProduct(item.id)"
                 :icon="Edit"
                 circle
                 plain
                 type="primary"
-              ></el-button>
+              />
               <el-button
                 class="btn-del"
                 :icon="Delete"
+                @click="deleteProduct(item.id)"
                 circle
                 plain
                 type="danger"
-              ></el-button>
+              />
             </span>
 
             <template #footer>
