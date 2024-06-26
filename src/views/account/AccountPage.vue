@@ -3,8 +3,10 @@ import LayoutContainer from '@/components/layout/LayoutContainer.vue'
 import { useRouter } from 'vue-router'
 import { ref, reactive } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
+import { useUserStore } from '@/stores'
 const router = useRouter()
 const form = ref()
+const userStore = useUserStore()
 //表單
 const formModel = reactive({
   nickname: '',
@@ -15,9 +17,12 @@ const imgUrl = ref('')
 const onUploadFile = (uploadFile) => {
   imgUrl.value = URL.createObjectURL(uploadFile.raw) //預覽圖片
   formModel.img = imgUrl.value
+  console.log(uploadFile)
 }
 
 const update = () => {
+  userStore.accountInfo.nickName = formModel.nickname
+  userStore.accountInfo.avatar = formModel.img
   router.push('/main')
 }
 </script>

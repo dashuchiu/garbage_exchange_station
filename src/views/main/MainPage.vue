@@ -17,8 +17,8 @@ const casual = [
   },
   {
     id: 2,
-    img: 'https://cdn.dummyjson.com/product-images/25/4.jpg',
-    title: '梅子粉',
+    img: 'https://cdn.dummyjson.com/products/images/sports-accessories/Baseball%20Ball/thumbnail.png',
+    title: '大鼓祥平沒簽名棒球',
     price: 50,
     countDown: 8
   }

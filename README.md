@@ -1,6 +1,6 @@
 # garbage exchange station
 
-DEMO:[garbage_exchange_station](https://dashuchiu.github.io/demo/#/main)  
+DEMO:[garbage_exchange_station](https://garbage-exchange-station.onrender.com/#/main)  
 使用vue3、樣式框架為Element UI開發的廢物交換網站。
 + 前端框架： Vue3 + Vue router + pinia + axios
 + 前端UI框架及樣式: Element UI/SCSS

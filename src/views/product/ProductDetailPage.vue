@@ -5,28 +5,28 @@ import { Link, UserFilled } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
 import { ref, inject, computed } from 'vue'
 import { countDown } from '@/utils/common'
-import { useUserStore } from '@/stores'
+import { useUserStore, useProductsStore } from '@/stores'
 
 const input = ref('')
 const rate = ref(3.7)
 const route = useRoute()
 const routeId = route.params.id
 const productUrl = ref(window.location.href)
-const userEmail = ref(useUserStore().userInfo.email)
+const userStore = useUserStore()
+const productsStore = useProductsStore()
+const userEmail = ref(userStore.userInfo.email)
 const { isProductInCollection, collect, products } = inject('collect')
 
+const totalProducts = ref(products.value)
 const product = computed(() =>
-  products.value.find((product) => product.id === routeId)
+  totalProducts.value.find((product) => product.id === routeId)
 )
 const getCountDown = computed(() => countDown(routeId))
 
 //留言
-const comment = ref([])
-comment.value = product.value.comments
-comment.value.forEach((item) => {
-  item.avatar = item.author.slice(0, 2)
-})
-console.log(comment.value)
+const avatarName = (name) => {
+  return name.slice(0, 2)
+}
 //只取@之前的帳號名稱
 const userName = computed(() => {
   return userEmail.value.split('@')[0]
@@ -37,15 +37,23 @@ const handleInput = (val) => {
   input.value = val
 }
 const addComment = () => {
-  comment.value = [
-    ...comment.value,
-    {
-      id: Math.floor(Math.random() * 1000),
-      author: userName.value,
-      avatar: userName.value.slice(0, 2),
-      content: input.value
+  const newProducts = productsStore.products.map((item) => {
+    if (item.id === product.value.id) {
+      item.comments = [
+        {
+          id: Math.floor(Math.random() * 1000),
+          author: userName.value,
+          avatar: userName.value.slice(0, 2),
+          content: input.value
+        },
+        ...item.comments
+      ]
+      return item
     }
-  ]
+    return item
+  })
+  totalProducts.value = newProducts
+  productsStore.setProductList(newProducts)
   input.value = ''
 }
 //點擊我要廢物輸入金額
@@ -152,9 +160,13 @@ const inputPrice = () => {
             >送出</el-button
           >
         </div>
-        <div class="comment-box" v-for="item in comment" :key="item.id">
-          <el-avatar>{{ item.avatar }}</el-avatar>
-          <div>{{ item.author }}</div>
+        <div
+          class="comment-box"
+          v-for="item in product.comments"
+          :key="item.id"
+        >
+          <el-avatar>{{ avatarName(item.author) }}</el-avatar>
+          <div>{{ avatarName(item.author) }}</div>
           <div class="comment-content">{{ item.content }}</div>
         </div>
       </div>

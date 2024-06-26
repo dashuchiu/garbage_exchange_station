@@ -2,7 +2,7 @@
 import { useProductsStore } from '@/stores'
 import { productsList, getCollection } from '@/utils/localStorage'
 import { addToCollection, removeCollection } from '@/utils/collect'
-import { onBeforeMount, ref, provide } from 'vue'
+import { onBeforeMount, ref, provide, computed } from 'vue'
 
 const productsStore = useProductsStore()
 
@@ -11,7 +11,7 @@ const getProductList = () => {
     productsStore.getProductsList()
   }
 }
-const products = ref(productsList())
+const products = computed(() => productsStore.products)
 const collection = ref(getCollection())
 const collect = (id) => {
   addToCollection(id)

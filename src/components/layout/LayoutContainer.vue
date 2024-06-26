@@ -65,8 +65,9 @@ onMounted(() => {
   userStore.getUser()
   links.value = loadAll()
 })
-//會員資訊>email
+//使用者資訊
 const userInfo = ref(userStore.userInfo)
+const accountInfo = ref(userStore.accountInfo)
 
 const publish = () => {
   router.push('/main/publish')
@@ -147,8 +148,10 @@ const category = () => {
             >
             <el-dropdown v-else @command="onCommand">
               <span class="el-dropdown-link">
-                <el-avatar :icon="UserFilled" />
-                <span class="userInfo">{{ userInfo.email }}</span>
+                <el-avatar :src="accountInfo.avatar" :icon="UserFilled" />
+                <span class="userInfo">{{
+                  accountInfo.nickName || userInfo.email
+                }}</span>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>

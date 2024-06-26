@@ -13,7 +13,6 @@ export const useUserStore = defineStore(
     const removeToken = () => {
       token.value = ''
     }
-
     const userInfo = ref({})
     const getUser = async () => {
       await onAuthStateChanged(auth, (user) => {
@@ -22,17 +21,21 @@ export const useUserStore = defineStore(
         }
       })
     }
-
     const setUser = (obj) => {
       userInfo.value = obj
     }
+    const accountInfo = ref({
+      nickName: '',
+      avatar: ''
+    })
     return {
       token,
       setToken,
       removeToken,
       userInfo,
       getUser,
-      setUser
+      setUser,
+      accountInfo
     }
   },
   {
